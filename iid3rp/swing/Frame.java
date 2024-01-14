@@ -1,79 +1,33 @@
 package iid3rp.swing;
 import javax.swing.*;
-import java.util.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.imageio.*;
 public class Frame extends JFrame
-{  
-    private ImageIcon backgroundImage;
-    private String backgroundStyle = "Center";
-        
+{         
     public Frame(String title)
     {
         super(title);
     }
     
-    protected void paintComponent(Graphics g) 
+    public void setCloseOperation(String operation) 
     {
-        paintComponent(g);
-        if (backgroundImage != null) 
+        switch (operation.toLowerCase()) 
         {
-            // Apply different drawing techniques based on the style:
-            if (backgroundStyle.equalsIgnoreCase("Stretch"))  
-            {
-                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("Tile")) 
-            {
-                int imageWidth = backgroundImage.getIconWidth();
-                int imageHeight = backgroundImage.getIconHeight();
-                for (int y = 0; y < getHeight(); y += imageHeight) 
-                {
-                    for (int x = 0; x < getWidth(); x += imageWidth) 
-                    {
-                        g.drawImage(backgroundImage.getImage(), x, y, this);
-                    }
-                }
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("Center")) 
-            {
-                int x = (getWidth() - backgroundImage.getIconWidth()) / 2;
-                int y = (getHeight() - backgroundImage.getIconHeight()) / 2;
-                g.drawImage(backgroundImage.getImage(), x, y, this);
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("Zoom")) 
-            {
-                int imageWidth = backgroundImage.getIconWidth();
-                int imageHeight = backgroundImage.getIconHeight();
-                double zoomFactor = Math.max(getWidth() / (double) imageWidth, getHeight() / (double) imageHeight);
-                int zoomedWidth = (int) (imageWidth * zoomFactor);
-                int zoomedHeight = (int) (imageHeight * zoomFactor);
-                int x = (getWidth() - zoomedWidth) / 2;
-                int y = (getHeight() - zoomedHeight) / 2;
-                g.drawImage(backgroundImage.getImage(), x, y, zoomedWidth, zoomedHeight, this);
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("ZoomX")) 
-            {
-                int imageWidth = backgroundImage.getIconWidth();
-                int imageHeight = backgroundImage.getIconHeight();
-                double zoomFactor = getWidth() / (double) imageWidth;
-                int zoomedHeight = (int) (imageHeight * zoomFactor);
-                int y = (getHeight() - zoomedHeight) / 2;
-                g.drawImage(backgroundImage.getImage(), 0, y, getWidth(), zoomedHeight, this);
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("ZoomY")) 
-            {
-                int imageWidth = backgroundImage.getIconWidth();
-                int imageHeight = backgroundImage.getIconHeight();
-                double zoomFactor = getHeight() / (double) imageHeight;
-                int zoomedWidth = (int) (imageWidth * zoomFactor);
-                int x = (getWidth() - zoomedWidth) / 2;
-                g.drawImage(backgroundImage.getImage(), x, 0, zoomedWidth, getHeight(), this);
-            } 
-            else if (backgroundStyle.equalsIgnoreCase("Default")) 
-            {
-                g.drawImage(backgroundImage.getImage(), 0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight(), this);
-            }
+            case "exit":
+                super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                break;
+            case "hide":
+                super.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                break;
+            case "dispose":
+                super.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                break;
+            case "nothing":
+                super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid close operation: " + operation);
         }
     }
 
@@ -94,24 +48,56 @@ public class Frame extends JFrame
         Dimension screenSize = toolkit.getScreenSize();
         int x = (screenSize.width - getWidth()) / 2;
         int y = (screenSize.height - getHeight()) / 2;
-        setLocation(x, y);
-    }
-
-    public void setBackgroundImage(ImageIcon imageIcon) 
-    {
-        this.backgroundImage = imageIcon;
-        repaint(); // Trigger a repaint to display the new image
+        super.setLocation(x, y);
     }
     
-    public void setBackgroundStyle(String style) 
+    public void setResizable(boolean bool)
     {
-        this.backgroundStyle = style;
-        repaint();
+        super.setResizable(bool);
     }
+    
+    public void setBorder(String style) // borderless
+    {
+        try 
+        {
+            if (style.equalsIgnoreCase("none")) 
+            {
+                setUndecorated(true); // Use setUndecorated for borderless
+            }
+            else if (style.equalsIgnoreCase("default"))
+            {
+                setUndecorated(false);
+            }
+        } 
+        catch (IllegalArgumentException e) 
+        {
+            System.err.println("Invalid border style: " + style);
+        }
+    } 
     
     public void setVisible(boolean bool)
     {
         super.setVisible(bool);
+    }
+    
+    public void addMouseEvent(MouseListener listener)
+    {
+        super.addMouseListener(listener);
+    }
+    
+    public void addMouseMotionEvent(MouseMotionListener listener)
+    {
+        super.addMouseMotionListener(listener);
+    }
+    
+    public void addComponentListener(ComponentListener listener)
+    {
+        super.addComponentListener(listener);
+    }
+    
+    public void addWindowListener(WindowListener listener)
+    {
+        super.addWindowListener(listener);
     }
     
     public static void main(String[] args)
