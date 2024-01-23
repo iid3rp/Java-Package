@@ -24,7 +24,7 @@ public class stuff
                 System.out.print("Clicked!");
             }
         });
-        System.out.print("This is commited through netbeans!"); // for reference...
+        System.out.print("This is commited through netbeans!"); // for reference..
         return frame;
     }
 }
